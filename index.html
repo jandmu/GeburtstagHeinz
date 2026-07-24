@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Herzlichen Glückwunsch, lieber Heinz! – Geburtstagsquiz zum 80.</title>
+<style>
+  /* ===================================================================
+     GRUNDEINSTELLUNGEN
+     Seniorenfreundlich: große Schrift, hoher Kontrast, große Buttons.
+     =================================================================== */
+  :root{
+    --wasserblau-dunkel:#0f4c66;
+    --wasserblau:#1a6b8f;
+    --wasserblau-hell:#5ba3c2;
+    --sonnengelb:#f4b942;
+    --sonnengelb-dunkel:#d99a1f;
+    --creme:#fdf6e8;
+    --sand:#f3e6c9;
+    --text-dunkel:#1a2b33;
+    --weiss:#ffffff;
+    --gruen-ok:#2e7d4f;
+  }
+
+  *{ box-sizing:border-box; }
+
+  html{
+    /* Basis-Schriftgröße mindestens 20px für gute Lesbarkeit */
+    font-size:20px;
+  }
+
+  body{
+    margin:0;
+    padding:0;
+    font-family:Georgia, "Times New Roman", serif;
+    background:linear-gradient(180deg, var(--creme) 0%, var(--sand) 100%);
+    color:var(--text-dunkel);
+    min-height:100vh;
+    line-height:1.5;
+  }
+
+  .seite{
+    max-width:800px;
+    margin:0 auto;
+    padding:1.5rem 1.2rem 3rem 1.2rem;
+  }
+
+  /* Bildschirme werden per JavaScript ein-/ausgeblendet */
+  .screen{ display:none; }
+  .screen.aktiv{ display:block; }
+
+  h1{
+    font-size:1.8rem;
+    color:var(--wasserblau-dunkel);
+    text-align:center;
+    line-height:1.3;
+    margin-top:0.5rem;
+  }
+
+  h2{
+    font-size:1.4rem;
+    color:var(--wasserblau-dunkel);
+  }
+
+  p{
+    font-size:1.05rem;
+  }
+
+  .karte{
+    background:var(--weiss);
+    border:3px solid var(--wasserblau-hell);
+    border-radius:18px;
+    padding:1.8rem 1.5rem;
+    margin:1.5rem 0;
+    box-shadow:0 6px 18px rgba(15,76,102,0.15);
+  }
+
+  /* Große, gut klickbare Buttons — mindestens 60px hoch */
+  button{
+    font-family:inherit;
+    font-size:1.1rem;
+    min-height:60px;
+    padding:0.8rem 1.5rem;
+    border-radius:14px;
+    border:3px solid var(--wasserblau-dunkel);
+    background:var(--sonnengelb);
+    color:var(--wasserblau-dunkel);
+    font-weight:bold;
+    cursor:pointer;
+    width:100%;
+    margin:0.6rem 0;
+    transition:transform 0.1s ease, background 0.2s ease;
+  }
+
+  button:hover{
+    background:var(--sonnengelb-dunkel);
+  }
+
+  button:active{
+    transform:scale(0.98);
+  }
+
+  button:focus-visible{
+    outline:4px solid var(--wasserblau-dunkel);
+    outline-offset:3px;
+  }
+
+  .start-button{
+    background:var(--wasserblau);
+    color:var(--weiss);
+    border-color:var(--wasserblau-dunkel);
+    font-size:1.3rem;
+  }
+  .start-button:hover{ background:var(--wasserblau-dunkel); }
+
+  /* Fortschrittsanzeige */
+  .fortschritt-text{
+    text-align:center;
+    font-size:1.1rem;
+    font-weight:bold;
+    color:var(--wasserblau-dunkel);
+    margin-bottom:0.5rem;
+  }
+
+  .fortschritt-balken-aussen{
+    background:var(--sand);
+    border:2px solid var(--wasserblau);
+    border-radius:20px;
+    height:28px;
+    overflow:hidden;
+    margin-bottom:1.5rem;
+  }
+
+  .fortschritt-balken-innen{
+    background:linear-gradient(90deg, var(--wasserblau), var(--sonnengelb));
+    height:100%;
+    transition:width 0.4s ease;
+  }
+
+  .jahrzehnt-label{
+    display:inline-block;
+    background:var(--sonnengelb);
+    color:var(--wasserblau-dunkel);
+    font-weight:bold;
+    padding:0.3rem 0.9rem;
+    border-radius:999px;
+    font-size:0.95rem;
+    margin-bottom:0.8rem;
+  }
+
+  .antwort-button{
+    text-align:left;
+    background:var(--creme);
+    color:var(--text-dunkel);
+    border-color:var(--wasserblau-hell);
+  }
+  .antwort-button:hover{ background:var(--sand); }
+
+  .antwort-button.richtig{
+    background:#d7f0dd;
+    border-color:var(--gruen-ok);
+    color:var(--gruen-ok);
+  }
+  .antwort-button.falsch{
+    background:#fbe4d5;
+    border-color:#c0632c;
+  }
+  .antwort-button:disabled{
+    cursor:default;
+  }
+
+  .feedback{
+    margin-top:1.2rem;
+    padding:1.2rem;
+    border-radius:14px;
+    background:var(--sand);
+    border:2px solid var(--wasserblau-hell);
+  }
+
+  .feedback strong{
+    color:var(--wasserblau-dunkel);
+  }
+
+  /* ===================================================================
+     ABSCHLUSS-SEITE: Gruß + Konfetti-Animation
+     =================================================================== */
+  .konfetti-huelle{
+    position:relative;
+    overflow:hidden;
+  }
+
+  .konfetti{
+    position:fixed;
+    top:-20px;
+    width:12px;
+    height:12px;
+    opacity:0.85;
+    animation:falle 4.5s linear infinite;
+    z-index:1;
+  }
+
+  @keyframes falle{
+    0%   { transform:translateY(0) rotate(0deg); }
+    100% { transform:translateY(110vh) rotate(360deg); }
+  }
+
+  /* Bewegungsanimation nur, wenn der Nutzer keine reduzierte Bewegung wünscht */
+  @media (prefers-reduced-motion: reduce){
+    .konfetti{ display:none; }
+  }
+
+  /* ===================================================================
+     GUTSCHEINE
+     =================================================================== */
+  .gutschein{
+    position:relative;
+    background:var(--weiss);
+    border:4px double var(--wasserblau);
+    border-radius:16px;
+    padding:2rem 1.6rem;
+    margin:2rem 0;
+    box-shadow:0 6px 18px rgba(15,76,102,0.18);
+  }
+
+  .gutschein::before,
+  .gutschein::after{
+    content:"❖";
+    position:absolute;
+    color:var(--sonnengelb-dunkel);
+    font-size:1.6rem;
+    top:10px;
+  }
+  .gutschein::before{ left:14px; }
+  .gutschein::after{ right:14px; }
+
+  .gutschein-titel{
+    text-align:center;
+    font-size:1.5rem;
+    color:var(--wasserblau-dunkel);
+    margin:0.2rem 0 0.3rem 0;
+  }
+
+  .gutschein-unterzeile{
+    text-align:center;
+    font-style:italic;
+    color:var(--wasserblau);
+    margin-bottom:1rem;
+  }
+
+  .gutschein-info{
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:0.5rem;
+    font-size:0.95rem;
+    color:#555;
+    border-top:1px dashed var(--wasserblau-hell);
+    border-bottom:1px dashed var(--wasserblau-hell);
+    padding:0.6rem 0;
+    margin-bottom:1.2rem;
+  }
+
+  .unterschriften{
+    display:flex;
+    justify-content:space-between;
+    gap:1.5rem;
+    flex-wrap:wrap;
+    margin-top:1.5rem;
+  }
+
+  .unterschrift{
+    flex:1 1 220px;
+    text-align:center;
+    border-top:2px solid var(--text-dunkel);
+    padding-top:0.4rem;
+    font-size:0.95rem;
+  }
+
+  .druck-button{
+    background:var(--wasserblau);
+    color:var(--weiss);
+    border-color:var(--wasserblau-dunkel);
+    max-width:400px;
+    margin:1.5rem auto;
+    display:block;
+  }
+  .druck-button:hover{ background:var(--wasserblau-dunkel); }
+
+  /* Kleinere Bildschirme (Smartphone): etwas kompakterer Abstand */
+  @media (max-width:480px){
+    .seite{ padding:1rem 0.8rem 2rem 0.8rem; }
+    h1{ font-size:1.5rem; }
+    .karte{ padding:1.3rem 1rem; }
+    .unterschriften{ flex-direction:column; }
+  }
+
+  /* ===================================================================
+     DRUCKANSICHT
+     Nur die Gutscheine werden gedruckt, alles andere wird ausgeblendet.
+     =================================================================== */
+  @media print{
+    body{ background:var(--weiss) !important; }
+    .no-print{ display:none !important; }
+    .konfetti{ display:none !important; }
+    /* Start- und Quiz-Bildschirm nie mitdrucken */
+    #screen-start, #screen-quiz{ display:none !important; }
+    /* Auf dem Abschluss-Bildschirm nur die Gutscheine drucken, nicht den Gruß */
+    #screen-ende{ display:block !important; }
+    #screen-ende .karte{ display:none !important; }
+    .gutschein{
+      box-shadow:none;
+      page-break-inside:avoid;
+      page-break-after:always;
+    }
+    .gutschein:last-child{
+      page-break-after:auto;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="seite">
+
+  <!-- ============================================================
+       BILDSCHIRM 1: START
+       ============================================================ -->
+  <div id="screen-start" class="screen aktiv">
+    <div class="karte">
+      <h1>Herzlichen Glückwunsch zum 80. Geburtstag,<br>lieber Papa, Opa und Schwiegervater!</h1>
+      <p>Lieber Heinz, zu deinem großen Ehrentag haben wir dir ein kleines Quiz
+         zusammengestellt. Es geht um dein Geburtsjahr 1946 und die spannenden
+         Jahrzehnte, die seitdem vergangen sind — Musik, Autos, Fernsehen und
+         so manches Ereignis, an das du dich vielleicht noch gut erinnerst.</p>
+      <p>Es gibt hier nichts zu verlieren: Jede Antwort wird freundlich
+         aufgelöst, es gibt kein Zeitlimit und du kannst dir für alles so viel
+         Zeit lassen, wie du möchtest. Am Ende wartet noch eine kleine
+         Überraschung auf dich.</p>
+      <button class="start-button" onclick="starteQuiz()">Los geht's!</button>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       BILDSCHIRM 2: QUIZ
+       ============================================================ -->
+  <div id="screen-quiz" class="screen">
+    <div class="fortschritt-text" id="fortschritt-text">Frage 1 von 8</div>
+    <div class="fortschritt-balken-aussen">
+      <div class="fortschritt-balken-innen" id="fortschritt-balken"></div>
+    </div>
+
+    <div class="karte">
+      <div class="jahrzehnt-label" id="jahrzehnt-label"></div>
+      <h2 id="frage-text"></h2>
+      <div id="antworten-liste"></div>
+      <div class="feedback" id="feedback-bereich" style="display:none;">
+        <p id="feedback-text"></p>
+        <button onclick="naechsteFrage()">Weiter</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       BILDSCHIRM 3: ABSCHLUSS
+       ============================================================ -->
+  <div id="screen-ende" class="screen konfetti-huelle">
+
+    <div class="karte">
+      <h1>Das war's – vielen Dank fürs Mitmachen, lieber Heinz!</h1>
+      <p>
+        <!-- HIER ANPASSEN — Grußtext:
+             Ersetze den folgenden Text durch deine eigene, persönliche
+             Fassung. Wichtig ist nur, dass klar wird: Das Geschenk kommt
+             gemeinsam von Jens und Julia mit ihren Familien. -->
+        Lieber Heinz, lieber Papa, lieber Opa,<br><br>
+        80 Jahre – was für eine wunderbare Zahl, und was für ein reiches Leben
+        steckt dahinter! Wir sind so dankbar für alles, was du für uns warst
+        und bist: für deine Ruhe, deinen Humor und deine offene Tür zu jeder
+        Zeit. Die kleine Zeitreise durch die Jahrzehnte sollte dir zeigen,
+        wie viel sich seit 1946 verändert hat – und wie viel davon du miterlebt
+        und mitgeprägt hast.<br><br>
+        Zu diesem besonderen Tag möchten wir, Jens und Julia, gemeinsam mit
+        unseren Familien, dir eine kleine Freude machen. Wir hoffen, sie
+        gefällt dir.<br><br>
+        Mit ganz viel Liebe und Umarmungen,<br>
+        deine Familie
+      </p>
+    </div>
+
+    <!-- ============================================================
+         GUTSCHEINE — werden auf dem Bildschirm UND beim Drucken gezeigt
+         ============================================================ -->
+    <div id="gutschein-anzeige">
+      <div class="gutschein">
+        <div class="gutschein-titel">Gutschein</div>
+        <div class="gutschein-unterzeile">Gemeinsame Reise an den Bodensee</div>
+        <p style="text-align:center;">
+          Genieße mit uns ein paar unvergessliche Tage am Bodensee — mit Blick
+          aufs Wasser, gutem Essen und viel gemeinsamer Zeit.
+        </p>
+        <div class="gutschein-info">
+          <span>Gutschein-Nr. 2026-01</span>
+          <span id="datum-gutschein-1">Ausgestellt am 24.07.2026</span>
+        </div>
+        <p style="text-align:center;">
+          Ausgestellt für <strong>Heinz</strong><br>
+          Überreicht von seinen Kindern und deren Familien
+        </p>
+        <div class="unterschriften">
+          <div class="unterschrift">Jens Müller und Familie</div>
+          <div class="unterschrift">Julia Müller-Schleppi und Familie</div>
+        </div>
+      </div>
+
+      <div class="gutschein">
+        <div class="gutschein-titel">Gutschein</div>
+        <div class="gutschein-unterzeile">Gemeinsamer Restaurantbesuch</div>
+        <p style="text-align:center;">
+          Wir laden dich herzlich zu einem gemeinsamen Essen in einem schönen
+          Restaurant ein — ganz in Ruhe, mit gutem Essen und noch besseren
+          Gesprächen.
+        </p>
+        <div class="gutschein-info">
+          <span>Gutschein-Nr. 2026-02</span>
+          <span id="datum-gutschein-2">Ausgestellt am 24.07.2026</span>
+        </div>
+        <p style="text-align:center;">
+          Ausgestellt für <strong>Heinz</strong><br>
+          Überreicht von seinen Kindern und deren Familien
+        </p>
+        <div class="unterschriften">
+          <div class="unterschrift">Jens Müller und Familie</div>
+          <div class="unterschrift">Julia Müller-Schleppi und Familie</div>
+        </div>
+      </div>
+    </div>
+
+    <button class="druck-button no-print" onclick="window.print()">
+      🖨️ Gutscheine drucken
+    </button>
+  </div>
+
+</div>
+
+<script>
+  // =====================================================================
+  // FRAGEN — HIER ANPASSEN
+  // Jede Frage hat: ein Jahrzehnt-Label, den Fragetext, die Antworten,
+  // den Index der richtigen Antwort (0 = erste Antwort) und eine
+  // Erläuterung, die nach der Antwort angezeigt wird.
+  // Fragen können hier beliebig ergänzt, gelöscht oder ersetzt werden.
+  // =====================================================================
+  const fragen = [
+    {
+      jahrzehnt: "1946 – Geburtsjahr",
+      frage: "In welchem Jahr wurde Heinz geboren?",
+      antworten: ["1944", "1946", "1948", "1950"],
+      richtig: 1,
+      erklaerung: "Richtig ist 1946 — das Jahr, in dem alles begann! Kurz nach Kriegsende, in einer Zeit des Neubeginns."
+    },
+    {
+      jahrzehnt: "1950er Jahre",
+      frage: "Welches Auto war in den 1950er Jahren in Deutschland ein absoluter Verkaufsschlager?",
+      antworten: ["VW Käfer", "Porsche 911", "Opel Manta", "Trabant 601"],
+      richtig: 0,
+      erklaerung: "Der VW Käfer war das Auto des Wirtschaftswunders — günstig, robust und auf jeder Straße zu sehen."
+    },
+    {
+      jahrzehnt: "1954",
+      frage: "Wie wird der Gewinn der deutschen Fußball-Weltmeisterschaft 1954 in Bern bis heute genannt?",
+      antworten: ["Das Sommermärchen", "Das Wunder von Bern", "Die Stunde Null", "Der große Wurf"],
+      richtig: 1,
+      erklaerung: "Das \"Wunder von Bern\" — der überraschende WM-Titel gegen Ungarn gilt bis heute als Sternstunde des deutschen Sports."
+    },
+    {
+      jahrzehnt: "1960er Jahre",
+      frage: "Wann wurde in Deutschland das Farbfernsehen eingeführt?",
+      antworten: ["1961", "1967", "1973", "1980"],
+      richtig: 1,
+      erklaerung: "1967 hielt die Farbe Einzug ins deutsche Fernsehen — ein echter Meilenstein für die Wohnzimmer im ganzen Land."
+    },
+    {
+      jahrzehnt: "1969",
+      frage: "Welches weltbewegende Ereignis fand im Juli 1969 statt?",
+      antworten: ["Die erste Mondlandung", "Der Mauerfall", "Die erste E-Mail", "Die Gründung der EU"],
+      richtig: 0,
+      erklaerung: "Am 20. Juli 1969 betrat Neil Armstrong als erster Mensch den Mond — live im Fernsehen von Millionen mitverfolgt."
+    },
+    {
+      jahrzehnt: "1970er Jahre",
+      frage: "Welche schwedische Band eroberte in den 1970er Jahren die Musikcharts weltweit?",
+      antworten: ["ABBA", "Queen", "Die Ärzte", "The Beatles"],
+      richtig: 0,
+      erklaerung: "ABBA startete 1974 mit \"Waterloo\" durch und wurde zu einer der erfolgreichsten Bands der 1970er Jahre."
+    },
+    {
+      jahrzehnt: "1980er Jahre",
+      frage: "Was war in den 1980er Jahren ein brandneues Gerät für den Musikgenuss unterwegs?",
+      antworten: ["Der Walkman", "Der Smartphone", "Die MP3-CD", "Das Autoradio"],
+      richtig: 0,
+      erklaerung: "Sonys Walkman revolutionierte ab 1979/80 das Musikhören unterwegs — Kopfhörer auf und die eigene Playlist im Ohr."
+    },
+    {
+      jahrzehnt: "1989",
+      frage: "Welches historische Ereignis veränderte 1989 Deutschland für immer?",
+      antworten: ["Der Fall der Berliner Mauer", "Die Wiedervereinigung der Währung", "Der EU-Beitritt", "Die erste Bundestagswahl"],
+      richtig: 0,
+      erklaerung: "Am 9. November 1989 fiel die Berliner Mauer — ein Moment, den viele nie vergessen werden."
+    }
+  ];
+
+  // =====================================================================
+  // ZUSTAND DES QUIZ
+  // =====================================================================
+  let aktuelleFrage = 0;
+
+  // Wechselt vom Start-Bildschirm zum Quiz
+  function starteQuiz(){
+    wechsleBildschirm('screen-quiz');
+    zeigeFrage();
+  }
+
+  // Zeigt die aktuelle Frage inklusive Antwortmöglichkeiten an
+  function zeigeFrage(){
+    const daten = fragen[aktuelleFrage];
+
+    // Fortschrittsanzeige aktualisieren
+    document.getElementById('fortschritt-text').textContent =
+      'Frage ' + (aktuelleFrage + 1) + ' von ' + fragen.length;
+    document.getElementById('fortschritt-balken').style.width =
+      ((aktuelleFrage) / fragen.length * 100) + '%';
+
+    document.getElementById('jahrzehnt-label').textContent = daten.jahrzehnt;
+    document.getElementById('frage-text').textContent = daten.frage;
+
+    // Feedback-Bereich zurücksetzen und verstecken
+    const feedbackBereich = document.getElementById('feedback-bereich');
+    feedbackBereich.style.display = 'none';
+
+    // Antwort-Buttons neu aufbauen
+    const liste = document.getElementById('antworten-liste');
+    liste.innerHTML = '';
+    daten.antworten.forEach((antwort, index) => {
+      const btn = document.createElement('button');
+      btn.className = 'antwort-button';
+      btn.textContent = antwort;
+      btn.onclick = () => beantworten(index);
+      liste.appendChild(btn);
+    });
+  }
+
+  // Wird aufgerufen, wenn eine Antwort angeklickt wurde.
+  // Zeigt sofort wohlwollendes Feedback — egal ob richtig oder falsch.
+  function beantworten(gewaehlterIndex){
+    const daten = fragen[aktuelleFrage];
+    const buttons = document.querySelectorAll('#antworten-liste .antwort-button');
+
+    buttons.forEach((btn, index) => {
+      btn.disabled = true;
+      if(index === daten.richtig){
+        btn.classList.add('richtig');
+      } else if(index === gewaehlterIndex){
+        btn.classList.add('falsch');
+      }
+    });
+
+    const warRichtig = gewaehlterIndex === daten.richtig;
+    const feedbackText = document.getElementById('feedback-text');
+    feedbackText.innerHTML =
+      (warRichtig
+        ? '<strong>Genau richtig!</strong> '
+        : '<strong>Fast!</strong> Kein Problem, hier ist die Auflösung: ')
+      + daten.erklaerung;
+
+    document.getElementById('feedback-bereich').style.display = 'block';
+  }
+
+  // Springt zur nächsten Frage oder zum Abschluss-Bildschirm
+  function naechsteFrage(){
+    aktuelleFrage++;
+    if(aktuelleFrage < fragen.length){
+      zeigeFrage();
+    } else {
+      document.getElementById('fortschritt-balken').style.width = '100%';
+      zeigeEnde();
+    }
+  }
+
+  // Zeigt den Abschluss-Bildschirm mit Gruß und Gutscheinen
+  function zeigeEnde(){
+    wechsleBildschirm('screen-ende');
+    erzeugeKonfetti();
+  }
+
+  // Blendet den gewünschten Bildschirm ein und alle anderen aus
+  function wechsleBildschirm(zielId){
+    document.querySelectorAll('.screen').forEach(el => el.classList.remove('aktiv'));
+    document.getElementById(zielId).classList.add('aktiv');
+    window.scrollTo(0, 0);
+  }
+
+  // Erzeugt ein paar dezente Konfetti-Elemente für den Abschluss-Bildschirm.
+  // Läuft nur, wenn der Nutzer keine reduzierte Bewegung eingestellt hat.
+  function erzeugeKonfetti(){
+    const reduzierteBewegung = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(reduzierteBewegung) return;
+
+    const farben = ['#f4b942', '#1a6b8f', '#5ba3c2', '#d99a1f'];
+    const huelle = document.getElementById('screen-ende');
+
+    for(let i = 0; i < 24; i++){
+      const stueck = document.createElement('div');
+      stueck.className = 'konfetti no-print';
+      stueck.style.left = (Math.random() * 100) + 'vw';
+      stueck.style.background = farben[i % farben.length];
+      stueck.style.animationDelay = (Math.random() * 4) + 's';
+      stueck.style.animationDuration = (3.5 + Math.random() * 2) + 's';
+      huelle.appendChild(stueck);
+    }
+  }
+</script>
+
+</body>
+</html>
