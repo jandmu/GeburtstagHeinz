@@ -6,26 +6,40 @@
 <title>Herzlichen Glückwunsch, lieber Heinz! – Geburtstagsquiz zum 80.</title>
 <style>
   /* ===================================================================
-     GRUNDEINSTELLUNGEN – modernes, warmes Design
+     1) DESIGN-VARIABLEN (:root)
+     Zentrale Farben und Abstände. Wer das Aussehen anpassen möchte,
+     ändert am besten nur hier.
      =================================================================== */
   :root{
-    --blau-dunkel:#0f5a73;
-    --blau:#0e7490;      /* Wasserblau, Bodensee-Bezug */
-    --blau-hell:#38bdf8;
-    --gelb:#f5b301;      /* Sonnengelb */
-    --gelb-dunkel:#d99a00;
-    --creme:#fbf8f2;
-    --sand:#f2ead8;
-    --text:#1f2d33;
-    --text-leicht:#5b6b72;
+    /* --- Farben --- */
+    --blau-dunkel:#0f5a73;   /* dunkles Wasserblau (Überschriften, Verläufe) */
+    --blau:#0e7490;          /* Wasserblau, Bodensee-Bezug (Hauptfarbe) */
+    --blau-hell:#38bdf8;     /* helles Blau (Akzente, Hover) */
+    --gelb:#f5b301;          /* Sonnengelb (Verzierungen, Akzente) */
+    --gelb-dunkel:#d99a00;   /* dunkles Gelb (Text auf hellem Grund) */
+    --creme:#fbf8f2;         /* heller Hintergrundton */
+    --sand:#f2ead8;          /* etwas kräftigerer Hintergrundton */
+    --text:#1f2d33;          /* Grundtextfarbe */
+    --text-leicht:#5b6b72;   /* dezenter Text (Unterzeilen) */
     --weiss:#ffffff;
-    --gruen:#15803d;
+    --gruen:#15803d;         /* richtige Antwort */
     --gruen-bg:#e7f6ec;
+    --rot:#c2410c;           /* gewählte falsche Antwort (freundlich, nicht grell) */
     --rot-bg:#fdece4;
-    --rot:#c2410c;
-    --schatten:0 10px 30px rgba(15,90,115,0.10);
+    --schatten:0 10px 30px rgba(15,90,115,0.10);  /* weicher Kartenschatten */
+
+    /* --- Abstände / Radien (wiederkehrend) --- */
+    --radius-karte:22px;     /* Eckenradius der großen Karten */
+    --radius-button:14px;    /* Eckenradius der Buttons */
+    --radius-gutschein:20px; /* Eckenradius der Gutscheine */
+    --abstand-block:1.4rem;  /* Standardabstand zwischen Blöcken */
+    --seite-max:680px;       /* maximale Breite des Inhalts */
+    --button-hoehe:54px;     /* Mindesthöhe der Buttons */
   }
 
+  /* ===================================================================
+     2) GRUNDLAYOUT (Body, Seite, Bildschirme)
+     =================================================================== */
   *{ box-sizing:border-box; }
 
   html{
@@ -46,7 +60,7 @@
   }
 
   .seite{
-    max-width:680px;
+    max-width:var(--seite-max);
     margin:0 auto;
     padding:2rem 1.2rem 4rem 1.2rem;
   }
@@ -63,6 +77,9 @@
     .screen{ animation:none; }
   }
 
+  /* ===================================================================
+     3) TYPOGRAFIE UND KARTEN
+     =================================================================== */
   h1{
     font-size:1.7rem;
     font-weight:800;
@@ -85,20 +102,22 @@
 
   .karte{
     background:var(--weiss);
-    border-radius:22px;
+    border-radius:var(--radius-karte);
     padding:2rem 1.8rem;
     box-shadow:var(--schatten);
     border:1px solid rgba(15,90,115,0.06);
   }
 
-  /* ---------- Buttons ---------- */
+  /* ===================================================================
+     4) BUTTONS
+     =================================================================== */
   button{
     font-family:inherit;
     font-size:1.05rem;
     font-weight:600;
-    min-height:54px;
+    min-height:var(--button-hoehe);
     padding:0.8rem 1.4rem;
-    border-radius:14px;
+    border-radius:var(--radius-button);
     border:none;
     cursor:pointer;
     width:100%;
@@ -128,7 +147,9 @@
   }
   .sekundaer-button:hover{ background:rgba(14,116,144,0.06); }
 
-  /* ---------- Startbildschirm ---------- */
+  /* ===================================================================
+     5) STARTBILDSCHIRM
+     =================================================================== */
   .start-karte{
     position:relative;
     text-align:center;
@@ -221,7 +242,9 @@
     margin:1rem 0 0 0;
   }
 
-  /* ---------- Fortschritt ---------- */
+  /* ===================================================================
+     6) QUIZ (Fortschritt, Frage, Antworten, Feedback)
+     =================================================================== */
   .fortschritt{
     display:flex;
     align-items:center;
@@ -249,7 +272,7 @@
     white-space:nowrap;
   }
 
-  /* ---------- Jahrzehnt-Kennzeichnung über der Frage ---------- */
+  /* Jahrzehnt-Kennzeichnung über der Frage */
   .jahrzehnt-label{
     display:inline-flex;
     align-items:center;
@@ -265,7 +288,7 @@
     margin-bottom:1rem;
   }
 
-  /* ---------- Antworten ---------- */
+  /* Antwort-Buttons */
   #antworten-liste{ display:flex; flex-direction:column; gap:0.7rem; }
 
   .antwort-button{
@@ -292,6 +315,7 @@
   }
   .antwort-button:disabled{ cursor:default; }
 
+  /* Feedback-Bereich nach der Antwort */
   .feedback{
     margin-top:1.4rem;
     padding:1.2rem 1.3rem;
@@ -303,7 +327,7 @@
   .feedback strong{ color:var(--blau-dunkel); }
 
   /* ===================================================================
-     ABSCHLUSS-SEITE: Gruß, Konfetti, Gutscheine
+     7) ABSCHLUSS: Gruß, Konfetti
      =================================================================== */
   .konfetti{
     position:fixed;
@@ -328,10 +352,12 @@
   .gruss-text{ color:var(--text); }
   .gruss-text .anrede{ font-weight:700; color:var(--blau-dunkel); }
 
-  /* ---------- Gutscheine (Bodensee-Farbwelt: Wasserblau + Sonnengelb) ---------- */
+  /* ===================================================================
+     8) GUTSCHEINE (Bodensee-Farbwelt: Wasserblau + Sonnengelb)
+     =================================================================== */
   .gutschein{
     position:relative;
-    border-radius:20px;
+    border-radius:var(--radius-gutschein);
     padding:1.8rem 1.6rem;
     margin:1.4rem 0;
     color:var(--weiss);
@@ -443,7 +469,9 @@
     .animiert{ opacity:1; transform:none; transition:none; }
   }
 
-  /* Kleinere Bildschirme (Smartphone) */
+  /* ===================================================================
+     9) RESPONSIV (Smartphone)
+     =================================================================== */
   @media (max-width:480px){
     html{ font-size:16px; }
     .seite{ padding:1.4rem 0.9rem 3rem 0.9rem; }
@@ -454,7 +482,7 @@
   }
 
   /* ===================================================================
-     DRUCKANSICHT
+     10) DRUCKANSICHT
      Beim Drucken sollen die Gutscheine IMMER erscheinen – auch wenn der
      Überraschungs-Button noch nicht angeklickt wurde. Jeder Gutschein
      bekommt möglichst eine eigene Seite.
@@ -499,50 +527,33 @@
 
   <!-- ============================================================
        BILDSCHIRM 1: START
+       Alle Texte werden per JavaScript aus CONFIG eingesetzt.
        ============================================================ -->
   <div id="screen-start" class="screen aktiv">
     <div class="karte start-karte">
-
       <!-- Dezentes "80" als Wasserzeichen im Kartenhintergrund -->
-      <div class="wasserzeichen" aria-hidden="true">80</div>
-
-      <!-- HIER ANPASSEN — Foto:
-           Für ein Foto von Heinz oder ein Familienbild einfach die folgende
-           Zeile aktivieren (das "style=display:none" entfernen) und bei src
-           den Dateinamen eintragen, z. B. src="heinz.jpg". Das Bild liegt am
-           besten im selben Ordner wie diese Datei. -->
-      <img class="start-foto" src="" alt="Foto von Heinz" style="display:none;">
-
-      <!-- Große, elegante "80" als Blickfang -->
-      <div class="start-achtzig">80</div>
-
+      <div class="wasserzeichen" aria-hidden="true" id="start-wasserzeichen"></div>
+      <!-- Optionales Foto (wird nur angezeigt, wenn CONFIG.fotoPfad gesetzt ist) -->
+      <img class="start-foto" id="start-foto" src="" alt="" style="display:none;">
+      <!-- Große "80" als Blickfang -->
+      <div class="start-achtzig" id="start-achtzig"></div>
       <!-- Schlichtes Ornament über der Überschrift -->
-      <div class="zierlinie" aria-hidden="true"><span>✦</span></div>
-
+      <div class="zierlinie" aria-hidden="true"><span id="start-ornament"></span></div>
       <!-- Groß und fett -->
-      <h1>Herzlichen Glückwunsch zum 80. Geburtstag!</h1>
+      <h1 id="start-ueberschrift"></h1>
       <!-- Kleiner und kursiv -->
-      <div class="start-unterzeile">lieber Papa, Opa und Schwiegervater</div>
-
-      <p>Lieber Heinz, zu deinem großen Ehrentag haben wir dir ein kleines Quiz
-         zusammengestellt. Es geht um dein Geburtsjahr 1946 und die spannenden
-         Jahrzehnte, die seitdem vergangen sind — Musik, Autos, Fernsehen und
-         so manches Ereignis, an das du dich vielleicht noch gut erinnerst.</p>
-      <p>Es gibt hier nichts zu verlieren: Jede Antwort wird freundlich
-         aufgelöst, es gibt kein Zeitlimit und du kannst dir so viel Zeit lassen,
-         wie du möchtest. Am Ende wartet etwas auf dich, das wir noch nicht verraten.</p>
-
-      <!-- Kleine Orientierungszeile -->
-      <p class="start-hinweis">8 Fragen, ganz ohne Eile.</p>
-
-      <button class="primaer-button" onclick="starteQuiz()">Los geht's!</button>
-
-      <!-- Button zum Weitermachen – nur sichtbar, wenn ein Fortschritt gespeichert ist -->
+      <div class="start-unterzeile" id="start-unterzeile"></div>
+      <!-- Einleitungsabsätze -->
+      <div id="start-einleitung"></div>
+      <!-- Orientierungszeile -->
+      <p class="start-hinweis" id="start-hinweis"></p>
+      <!-- Start-Button (beginnt von vorn) -->
+      <button class="primaer-button" id="start-button" onclick="starteQuiz()"></button>
+      <!-- Weitermachen-Button (nur sichtbar, wenn ein Fortschritt gespeichert ist) -->
       <button id="weitermachen-button" class="sekundaer-button" style="display:none;"
-              onclick="setzeQuizFort()">Dort weitermachen, wo du aufgehört hast</button>
-
-      <!-- Dezente Absenderzeile -->
-      <p class="start-absender">Von Jens, Julia und ihren Familien</p>
+              onclick="setzeQuizFort()"></button>
+      <!-- Absenderzeile -->
+      <p class="start-absender" id="start-absender"></p>
     </div>
   </div>
 
@@ -554,7 +565,7 @@
       <div class="fortschritt-balken-aussen">
         <div class="fortschritt-balken-innen" id="fortschritt-balken"></div>
       </div>
-      <div class="fortschritt-text" id="fortschritt-text">Frage 1 von 9</div>
+      <div class="fortschritt-text" id="fortschritt-text"></div>
     </div>
 
     <div class="karte">
@@ -564,199 +575,510 @@
       <div id="antworten-liste"></div>
       <div class="feedback" id="feedback-bereich" style="display:none;">
         <p id="feedback-text"></p>
-        <button class="primaer-button" onclick="naechsteFrage()">Weiter</button>
+        <button class="primaer-button" id="feedback-weiter" onclick="naechsteFrage()"></button>
       </div>
     </div>
   </div>
 
   <!-- ============================================================
        BILDSCHIRM 3: ABSCHLUSS
+       Gruß und Gutscheine werden per JavaScript aus CONFIG erzeugt.
        ============================================================ -->
   <div id="screen-ende" class="screen">
-
     <div class="karte">
-      <h1>Das war's – vielen Dank fürs Mitmachen, lieber Heinz!</h1>
-      <p class="gruss-text">
-        <!-- HIER ANPASSEN — Grußtext:
-             Ersetze den folgenden Text durch deine eigene, persönliche
-             Fassung. Wichtig ist nur, dass klar wird: Das Geschenk kommt
-             gemeinsam von Jens und Julia mit ihren Familien. -->
-        <span class="anrede">Lieber Heinz, lieber Papa, lieber Opa,</span><br><br>
-        80 Jahre – was für eine wunderbare Zahl, und was für ein reiches Leben
-        steckt dahinter! Wir sind so dankbar für alles, was du für uns warst
-        und bist: für deine Ruhe, deinen Humor und deine offene Tür zu jeder
-        Zeit. Die kleine Zeitreise durch die Jahrzehnte sollte dir zeigen,
-        wie viel sich seit 1946 verändert hat – und wie viel davon du miterlebt
-        und mitgeprägt hast.<br><br>
-        Das Schönste aber ist und bleibt die Zeit, die wir miteinander
-        verbringen – und genau die möchten wir dir schenken. Zu diesem
-        besonderen Tag haben wir, Jens und Julia, gemeinsam mit unseren
-        Familien, uns deshalb zwei kleine Überraschungen für dich ausgedacht,
-        beide voller gemeinsamer Stunden.<br><br>
-        Mit ganz viel Liebe und Umarmungen,<br>
-        deine Familie
-      </p>
+      <h1 id="ende-ueberschrift"></h1>
+      <p class="gruss-text" id="gruss-text"></p>
     </div>
 
     <!-- Großer Button: erst hier werden die Gutscheine enthüllt -->
     <button id="ueberraschung-button" class="primaer-button no-print"
-            onclick="zeigeUeberraschung()">Und jetzt kommt die Überraschung</button>
+            onclick="zeigeUeberraschung()"></button>
 
-    <!-- ============================================================
-         GUTSCHEINE – zunächst verborgen, per Klick eingeblendet.
-         Reihenfolge: erst Restaurant (dieses Jahr), dann Bodensee
-         (nächstes Jahr) als großer Abschluss.
-         ============================================================ -->
-    <div id="ueberraschung">
-
-      <!-- Gutschein 1: Gemeinsamer Restaurantbesuch (noch dieses Jahr) -->
-      <div class="gutschein essen animiert" id="gutschein-1">
-        <div class="gutschein-marke">Geschenkgutschein · noch dieses Jahr</div>
-        <div class="gutschein-titel">Gemeinsamer Restaurantbesuch</div>
-        <p class="gutschein-beschreibung">
-          Noch in diesem Jahr laden wir dich zu einem gemütlichen Abend in einem
-          guten Restaurant ein — ganz in Ruhe, mit gutem Essen und viel Zeit zum
-          Reden. Und weil es dein Abend sein soll, suchst du das Restaurant
-          gemeinsam mit uns aus: Sag uns einfach, worauf du Lust hast, und wir
-          machen es möglich.
-        </p>
-        <div class="gutschein-info">
-          <span>Gutschein-Nr. 2026-01</span>
-          <span>Ausgestellt am 24.07.2026</span>
-        </div>
-        <p class="gutschein-fuer">
-          Ausgestellt für <strong>Heinz</strong> — überreicht von seinen Kindern
-          und deren Familien.
-        </p>
-        <div class="unterschriften">
-          <div class="unterschrift">Jens Müller und Familie</div>
-          <div class="unterschrift">Julia Müller-Schleppi und Familie</div>
-        </div>
-      </div>
-
-      <!-- Verbindende Zeile: die Klammer zwischen beiden Geschenken -->
-      <p class="verbindungszeile animiert" id="verbindungszeile">
-        So überbrückt unser gemeinsamer Abend in diesem Jahr die Vorfreude auf
-        die große Reise im nächsten.
-      </p>
-
-      <!-- Gutschein 2: Gemeinsame Reise an den Bodensee (kommendes Jahr) -->
-      <div class="gutschein reise animiert" id="gutschein-2">
-        <div class="gutschein-marke">Geschenkgutschein · im kommenden Jahr</div>
-        <div class="gutschein-titel">Gemeinsame Reise an den Bodensee</div>
-        <p class="gutschein-beschreibung">
-          Im kommenden Jahr geht es gemeinsam an den Bodensee — drei Generationen
-          unter einem Dach: du und Meta, deine beiden Kinder und ihre Familien.
-          Ein paar Tage am See, ganz ohne Termindruck: zusammen aufwachen,
-          zusammen essen, spazieren, reden und einfach die gemeinsame Zeit
-          genießen.
-        </p>
-        <div class="gutschein-info">
-          <span>Gutschein-Nr. 2026-02</span>
-          <span>Ausgestellt am 24.07.2026</span>
-        </div>
-        <p class="gutschein-fuer">
-          Ausgestellt für <strong>Heinz</strong> — überreicht von seinen Kindern
-          und deren Familien.
-        </p>
-        <div class="unterschriften">
-          <div class="unterschrift">Jens Müller und Familie</div>
-          <div class="unterschrift">Julia Müller-Schleppi und Familie</div>
-        </div>
-      </div>
-
-    </div>
-
+    <!-- Container für die beiden Gutscheine (Inhalt kommt aus CONFIG) -->
+    <div id="ueberraschung"></div>
   </div>
 
 </div>
 
 <script>
-  // =====================================================================
-  // FRAGEN — HIER ANPASSEN
-  // Eine Frage pro Jahrzehnt (1940er bis 2020er).
-  // Jede Frage hat: das Jahrzehnt (wird über der Frage angezeigt), den
-  // Fragetext, die Antworten, den Index der richtigen Antwort (0 = erste
-  // Antwort) und eine Erläuterung, die nach der Antwort erscheint.
-  // Fragen können hier beliebig ersetzt oder ergänzt werden.
-  // =====================================================================
-  const fragen = [
-    {
-      jahrzehnt: "1940er Jahre",
-      frage: "In welchem Jahr wurde Heinz geboren?",
-      antworten: ["1944", "1946", "1948", "1950"],
-      richtig: 1,
-      erklaerung: "Richtig ist 1946 — das Jahr, in dem alles begann! Kurz nach Kriegsende, in einer Zeit des Neubeginns."
-    },
-    {
-      jahrzehnt: "1950er Jahre",
-      frage: "Wie wird der Gewinn der Fußball-Weltmeisterschaft 1954 in Bern bis heute genannt?",
-      antworten: ["Das Sommermärchen", "Das Wunder von Bern", "Die Stunde Null", "Der große Wurf"],
-      richtig: 1,
-      erklaerung: "Das \"Wunder von Bern\" — der überraschende WM-Titel gegen Ungarn gilt bis heute als Sternstunde des deutschen Sports."
-    },
-    {
-      jahrzehnt: "1960er Jahre",
-      frage: "Welches weltbewegende Ereignis fand im Juli 1969 statt?",
-      antworten: ["Die erste Mondlandung", "Der Mauerfall", "Die erste E-Mail", "Die Gründung der EU"],
-      richtig: 0,
-      erklaerung: "Am 20. Juli 1969 betrat Neil Armstrong als erster Mensch den Mond — live im Fernsehen von Millionen mitverfolgt."
-    },
-    {
-      jahrzehnt: "1970er Jahre",
-      frage: "Welche schwedische Band eroberte in den 1970er Jahren die Musikcharts weltweit?",
-      antworten: ["ABBA", "Queen", "Die Ärzte", "The Beatles"],
-      richtig: 0,
-      erklaerung: "ABBA startete 1974 mit \"Waterloo\" durch und wurde zu einer der erfolgreichsten Bands der 1970er Jahre."
-    },
-    {
-      jahrzehnt: "1980er Jahre",
-      frage: "Was war in den 1980er Jahren ein brandneues Gerät für den Musikgenuss unterwegs?",
-      antworten: ["Der Walkman", "Das Smartphone", "Die MP3-CD", "Das Autoradio"],
-      richtig: 0,
-      erklaerung: "Sonys Walkman revolutionierte das Musikhören unterwegs — Kopfhörer auf und die eigene Musik im Ohr."
-    },
-    {
-      jahrzehnt: "1990er Jahre",
-      frage: "Welches große Ereignis vereinte 1990 Deutschland wieder zu einem Land?",
-      antworten: ["Die Deutsche Wiedervereinigung", "Der EU-Beitritt", "Die Euro-Einführung", "Die erste Bundestagswahl"],
-      richtig: 0,
-      erklaerung: "Am 3. Oktober 1990 wurde Deutschland offiziell wiedervereinigt — seitdem ist das der Tag der Deutschen Einheit."
-    },
-    {
-      jahrzehnt: "2000er Jahre",
-      frage: "Welche neue Währung erhielten die Deutschen zum 1. Januar 2002 als Bargeld?",
-      antworten: ["Den Euro", "Die D-Mark", "Den Franken", "Den Taler"],
-      richtig: 0,
-      erklaerung: "2002 löste der Euro die geliebte D-Mark als Bargeld ab — eine große Umstellung für alle im Alltag."
-    },
-    {
-      jahrzehnt: "2010er Jahre",
-      frage: "Wo wurde die deutsche Nationalmannschaft 2014 zum vierten Mal Fußball-Weltmeister?",
-      antworten: ["In Brasilien", "In Südafrika", "In Russland", "In Deutschland"],
-      richtig: 0,
-      erklaerung: "2014 holte das DFB-Team in Brasilien den WM-Titel — mit dem berühmten Siegtor von Mario Götze im Finale."
-    },
-    {
-      jahrzehnt: "2020er Jahre",
-      frage: "Welches Jubiläum feiert Heinz in diesem Jahr, 2026?",
-      antworten: ["Seinen 70. Geburtstag", "Seinen 75. Geburtstag", "Seinen 80. Geburtstag", "Seinen 85. Geburtstag"],
-      richtig: 2,
-      erklaerung: "Ganz genau — heute wird Heinz stolze 80 Jahre alt! Herzlichen Glückwunsch und einen wunderbaren Tag."
-    }
-  ];
+  // ============================================================
+  //  HIER ANPASSEN — alle Inhalte an einer Stelle
+  //  Unterhalb dieses Blocks muss nichts geändert werden.
+  // ============================================================
+  const CONFIG = {
 
-  // =====================================================================
-  // ZUSTAND DES QUIZ
-  // =====================================================================
-  let aktuelleFrage = 0;
-  let gegebeneAntworten = [];              // merkt sich die gewählten Antworten
+    // --- Seitentitel (Beschriftung des Browser-Tabs) ---
+    seitentitel: "Herzlichen Glückwunsch, lieber Heinz! – Geburtstagsquiz zum 80.",
+
+    // --- Namen ---
+    namen: {
+      heinz:  "Heinz",
+      meta:   "Meta",
+      kind1:  "Jens Müller",
+      kind2:  "Julia Müller-Schleppi"
+    },
+
+    // --- Eckdaten ---
+    alter:             80,           // Zahl im Blickfang und Wasserzeichen
+    geburtsjahr:       1946,
+    ausstellungsdatum: "24.07.2026", // Datum auf den Gutscheinen
+
+    // --- Optionales Foto (leerer Pfad = Foto ausgeblendet) ---
+    fotoPfad: "",                    // z. B. "heinz.jpg" eintragen, um es zu zeigen
+    fotoAlt:  "Foto von Heinz",
+
+    // --- Startbildschirm ---
+    start: {
+      ornament:     "✦",
+      ueberschrift: "Herzlichen Glückwunsch zum 80. Geburtstag!",
+      unterzeile:   "lieber Papa, Opa und Schwiegervater",
+      // Einleitung: beliebig viele Absätze (jeder Eintrag ein Absatz)
+      einleitung: [
+        "Lieber Heinz, zu deinem großen Ehrentag haben wir dir ein kleines Quiz zusammengestellt. Es geht um dein Geburtsjahr 1946 und die spannenden Jahrzehnte, die seitdem vergangen sind — Musik, Autos, Fernsehen und so manches Ereignis, an das du dich vielleicht noch gut erinnerst.",
+        "Es gibt hier nichts zu verlieren: Jede Antwort wird freundlich aufgelöst, es gibt kein Zeitlimit und du kannst dir so viel Zeit lassen, wie du möchtest. Am Ende wartet etwas auf dich, das wir noch nicht verraten."
+      ],
+      orientierung:  "8 Fragen, ganz ohne Eile.",
+      startButton:   "Los geht's!",
+      weiterButton:  "Dort weitermachen, wo du aufgehört hast",
+      absender:      "Von Jens, Julia und ihren Familien"
+    },
+
+    // --- Quiz-Beschriftungen ---
+    quiz: {
+      weiterButton:    "Weiter",
+      // {nummer} und {gesamt} werden automatisch ersetzt
+      fortschritt:     "Frage {nummer} von {gesamt}",
+      // Feedback-Präfixe (dürfen HTML enthalten), davor bzw. danach steht die Erläuterung
+      feedbackRichtig: "<strong>Genau richtig!</strong> ",
+      feedbackFalsch:  "<strong>Fast!</strong> Kein Problem, hier ist die Auflösung: "
+    },
+
+    // --- Abschlussbildschirm ---
+    abschluss: {
+      ueberschrift: "Das war's – vielen Dank fürs Mitmachen, lieber Heinz!",
+      // Kompletter Grußtext (HTML erlaubt: <br> für Umbrüche, <span class="anrede"> für die Anrede)
+      gruss:
+        '<span class="anrede">Lieber Heinz, lieber Papa, lieber Opa,</span><br><br>' +
+        '80 Jahre – was für eine wunderbare Zahl, und was für ein reiches Leben ' +
+        'steckt dahinter! Wir sind so dankbar für alles, was du für uns warst ' +
+        'und bist: für deine Ruhe, deinen Humor und deine offene Tür zu jeder ' +
+        'Zeit. Die kleine Zeitreise durch die Jahrzehnte sollte dir zeigen, ' +
+        'wie viel sich seit 1946 verändert hat – und wie viel davon du miterlebt ' +
+        'und mitgeprägt hast.<br><br>' +
+        'Das Schönste aber ist und bleibt die Zeit, die wir miteinander ' +
+        'verbringen – und genau die möchten wir dir schenken. Zu diesem ' +
+        'besonderen Tag haben wir, Jens und Julia, gemeinsam mit unseren ' +
+        'Familien, uns deshalb zwei kleine Überraschungen für dich ausgedacht, ' +
+        'beide voller gemeinsamer Stunden.<br><br>' +
+        'Mit ganz viel Liebe und Umarmungen,<br>' +
+        'deine Familie',
+      ueberraschungButton: "Und jetzt kommt die Überraschung"
+    },
+
+    // --- Verbindende Zeile zwischen den beiden Gutscheinen ---
+    verbindung: "So überbrückt unser gemeinsamer Abend in diesem Jahr die Vorfreude auf die große Reise im nächsten.",
+
+    // --- Gemeinsame Gutschein-Beschriftungen (Vorlagen) ---
+    // {nummer}, {datum} und {name} werden automatisch ersetzt.
+    gutscheinText: {
+      markePrefix:     "Geschenkgutschein",                 // vor der Zeitangabe
+      nummerLabel:     "Gutschein-Nr. {nummer}",
+      datumLabel:      "Ausgestellt am {datum}",
+      ausgestelltFuer: 'Ausgestellt für <strong>{name}</strong> — überreicht von seinen Kindern und deren Familien.'
+    },
+
+    // --- Die beiden Gutscheine (Reihenfolge = Anzeigereihenfolge) ---
+    // variante: "essen" oder "reise" (bestimmt nur die Farbgestaltung)
+    gutscheine: [
+      {
+        variante:       "essen",
+        zeit:           "noch dieses Jahr",
+        titel:          "Gemeinsamer Restaurantbesuch",
+        beschreibung:   "Noch in diesem Jahr laden wir dich zu einem gemütlichen Abend in einem guten Restaurant ein — ganz in Ruhe, mit gutem Essen und viel Zeit zum Reden. Und weil es dein Abend sein soll, suchst du das Restaurant gemeinsam mit uns aus: Sag uns einfach, worauf du Lust hast, und wir machen es möglich.",
+        nummer:         "2026-01",
+        unterschriften: ["Jens Müller und Familie", "Julia Müller-Schleppi und Familie"]
+      },
+      {
+        variante:       "reise",
+        zeit:           "im kommenden Jahr",
+        titel:          "Gemeinsame Reise an den Bodensee",
+        beschreibung:   "Im kommenden Jahr geht es gemeinsam an den Bodensee — drei Generationen unter einem Dach: du und Meta, deine beiden Kinder und ihre Familien. Ein paar Tage am See, ganz ohne Termindruck: zusammen aufwachen, zusammen essen, spazieren, reden und einfach die gemeinsame Zeit genießen.",
+        nummer:         "2026-02",
+        unterschriften: ["Jens Müller und Familie", "Julia Müller-Schleppi und Familie"]
+      }
+    ],
+
+    // --- Fragen ---------------------------------------------------
+    // Format jeder Frage:
+    //   jahrzehnt:  Text über der Frage (z. B. "1960er Jahre")
+    //   frage:      die Frage selbst
+    //   antworten:  Liste der Antwortmöglichkeiten (3–4 Stück)
+    //   richtig:    Index der richtigen Antwort (0 = erste Antwort)
+    //   erklaerung: wohlwollende Auflösung, erscheint nach der Antwort
+    // Zum Ergänzen einfach ein weiteres { ... }-Objekt hinzufügen,
+    // zum Entfernen ein Objekt löschen.
+    fragen: [
+
+      // ---------- Fragen zu 1946 und den Jahrzehnten danach ----------
+      {
+        jahrzehnt: "1940er Jahre",
+        frage: "In welchem Jahr wurde Heinz geboren?",
+        antworten: ["1944", "1946", "1948", "1950"],
+        richtig: 1,
+        erklaerung: "Richtig ist 1946 — das Jahr, in dem alles begann! Kurz nach Kriegsende, in einer Zeit des Neubeginns."
+      },
+      {
+        jahrzehnt: "1950er Jahre",
+        frage: "Wie wird der Gewinn der Fußball-Weltmeisterschaft 1954 in Bern bis heute genannt?",
+        antworten: ["Das Sommermärchen", "Das Wunder von Bern", "Die Stunde Null", "Der große Wurf"],
+        richtig: 1,
+        erklaerung: "Das \"Wunder von Bern\" — der überraschende WM-Titel gegen Ungarn gilt bis heute als Sternstunde des deutschen Sports."
+      },
+      {
+        jahrzehnt: "1960er Jahre",
+        frage: "Welches weltbewegende Ereignis fand im Juli 1969 statt?",
+        antworten: ["Die erste Mondlandung", "Der Mauerfall", "Die erste E-Mail", "Die Gründung der EU"],
+        richtig: 0,
+        erklaerung: "Am 20. Juli 1969 betrat Neil Armstrong als erster Mensch den Mond — live im Fernsehen von Millionen mitverfolgt."
+      },
+      {
+        jahrzehnt: "1970er Jahre",
+        frage: "Welche schwedische Band eroberte in den 1970er Jahren die Musikcharts weltweit?",
+        antworten: ["ABBA", "Queen", "Die Ärzte", "The Beatles"],
+        richtig: 0,
+        erklaerung: "ABBA startete 1974 mit \"Waterloo\" durch und wurde zu einer der erfolgreichsten Bands der 1970er Jahre."
+      },
+      {
+        jahrzehnt: "1980er Jahre",
+        frage: "Was war in den 1980er Jahren ein brandneues Gerät für den Musikgenuss unterwegs?",
+        antworten: ["Der Walkman", "Das Smartphone", "Die MP3-CD", "Das Autoradio"],
+        richtig: 0,
+        erklaerung: "Sonys Walkman revolutionierte das Musikhören unterwegs — Kopfhörer auf und die eigene Musik im Ohr."
+      },
+      {
+        jahrzehnt: "1990er Jahre",
+        frage: "Welches große Ereignis vereinte 1990 Deutschland wieder zu einem Land?",
+        antworten: ["Die Deutsche Wiedervereinigung", "Der EU-Beitritt", "Die Euro-Einführung", "Die erste Bundestagswahl"],
+        richtig: 0,
+        erklaerung: "Am 3. Oktober 1990 wurde Deutschland offiziell wiedervereinigt — seitdem ist das der Tag der Deutschen Einheit."
+      },
+      {
+        jahrzehnt: "2000er Jahre",
+        frage: "Welche neue Währung erhielten die Deutschen zum 1. Januar 2002 als Bargeld?",
+        antworten: ["Den Euro", "Die D-Mark", "Den Franken", "Den Taler"],
+        richtig: 0,
+        erklaerung: "2002 löste der Euro die geliebte D-Mark als Bargeld ab — eine große Umstellung für alle im Alltag."
+      },
+      {
+        jahrzehnt: "2010er Jahre",
+        frage: "Wo wurde die deutsche Nationalmannschaft 2014 zum vierten Mal Fußball-Weltmeister?",
+        antworten: ["In Brasilien", "In Südafrika", "In Russland", "In Deutschland"],
+        richtig: 0,
+        erklaerung: "2014 holte das DFB-Team in Brasilien den WM-Titel — mit dem berühmten Siegtor von Mario Götze im Finale."
+      },
+      {
+        jahrzehnt: "2020er Jahre",
+        frage: "Welches Jubiläum feiert Heinz in diesem Jahr, 2026?",
+        antworten: ["Seinen 70. Geburtstag", "Seinen 75. Geburtstag", "Seinen 80. Geburtstag", "Seinen 85. Geburtstag"],
+        richtig: 2,
+        erklaerung: "Ganz genau — heute wird Heinz stolze 80 Jahre alt! Herzlichen Glückwunsch und einen wunderbaren Tag."
+      }
+
+      // ---------- Familienfragen ----------
+      // HIER ANPASSEN — Familienfrage
+      // Diese Beispiele sind bewusst auskommentiert, damit das Quiz unverändert
+      // bleibt. Zum Aktivieren die Kommentarzeichen (//) entfernen und den
+      // vorstehenden Fragen ein Komma anhängen. Format wie oben.
+      //
+      // ,{
+      //   jahrzehnt: "Aus der Familie",
+      //   frage: "In welchem Jahr haben Heinz und Meta geheiratet?",
+      //   antworten: ["1968", "1970", "1972", "1974"],
+      //   richtig: 1,
+      //   erklaerung: "Beispieltext — hier die richtige Antwort und eine liebevolle Erinnerung eintragen."
+      // },
+      // {
+      //   jahrzehnt: "Aus der Familie",
+      //   frage: "Wie viele Enkelkinder hat Heinz?",
+      //   antworten: ["Zwei", "Drei", "Vier", "Fünf"],
+      //   richtig: 0,
+      //   erklaerung: "Beispieltext — hier die richtige Antwort eintragen."
+      // }
+
+    ]
+  };
+
+  // ============================================================
+  //  ZUSTANDSVERWALTUNG
+  // ============================================================
+  let aktuelleFrage = 0;                     // Index der aktuellen Frage
+  let gegebeneAntworten = [];                // merkt sich die gewählten Antworten
   const SPEICHER_SCHLUESSEL = 'heinz-quiz-fortschritt';
 
-  // --- Speicher-Hilfsfunktionen (mit Fehlerbehandlung) -----------------
-  // localStorage kann fehlschlagen (z. B. bei file:// oder Privatmodus).
-  // Alle Zugriffe sind deshalb in try/catch gekapselt, damit das Quiz
-  // auch dann einwandfrei funktioniert.
+  // ============================================================
+  //  HILFSFUNKTIONEN
+  // ============================================================
+
+  // Ersetzt Platzhalter der Form {name} in einer Vorlage durch Werte
+  function vorlage(text, werte){
+    return text.replace(/\{(\w+)\}/g, function(_, schluessel){
+      return (schluessel in werte) ? werte[schluessel] : '';
+    });
+  }
+
+  // Kurzschreibweise für document.getElementById
+  function el(id){ return document.getElementById(id); }
+
+  // ============================================================
+  //  BILDSCHIRM-RENDERING
+  //  Setzt alle Texte aus CONFIG in die (leeren) HTML-Elemente ein.
+  // ============================================================
+
+  // Startbildschirm füllen
+  function renderStart(){
+    const s = CONFIG.start;
+    el('start-wasserzeichen').textContent = CONFIG.alter;
+    el('start-achtzig').textContent       = CONFIG.alter;
+    el('start-ornament').textContent      = s.ornament;
+    el('start-ueberschrift').textContent  = s.ueberschrift;
+    el('start-unterzeile').textContent    = s.unterzeile;
+    el('start-hinweis').textContent       = s.orientierung;
+    el('start-button').textContent        = s.startButton;
+    el('weitermachen-button').textContent = s.weiterButton;
+    el('start-absender').textContent      = s.absender;
+
+    // Einleitung: pro Eintrag ein Absatz
+    const einl = el('start-einleitung');
+    einl.innerHTML = '';
+    s.einleitung.forEach(function(absatz){
+      const p = document.createElement('p');
+      p.textContent = absatz;
+      einl.appendChild(p);
+    });
+
+    // Foto nur anzeigen, wenn ein Pfad hinterlegt ist
+    const foto = el('start-foto');
+    foto.alt = CONFIG.fotoAlt;
+    if(CONFIG.fotoPfad){
+      foto.src = CONFIG.fotoPfad;
+      foto.style.display = 'block';
+    }
+  }
+
+  // Abschluss-Texte (Überschrift, Gruß, Überraschungs-Button) füllen
+  function renderAbschluss(){
+    el('ende-ueberschrift').textContent   = CONFIG.abschluss.ueberschrift;
+    el('gruss-text').innerHTML            = CONFIG.abschluss.gruss;
+    el('ueberraschung-button').textContent = CONFIG.abschluss.ueberraschungButton;
+  }
+
+  // Baut das HTML für einen einzelnen Gutschein
+  function gutscheinHtml(g, id){
+    const t = CONFIG.gutscheinText;
+    const marke  = t.markePrefix + ' · ' + g.zeit;
+    const nummer = vorlage(t.nummerLabel, { nummer: g.nummer });
+    const datum  = vorlage(t.datumLabel,  { datum: CONFIG.ausstellungsdatum });
+    const fuer   = vorlage(t.ausgestelltFuer, { name: CONFIG.namen.heinz });
+    const unterschriften = g.unterschriften.map(function(u){
+      return '<div class="unterschrift">' + u + '</div>';
+    }).join('');
+
+    return '' +
+      '<div class="gutschein ' + g.variante + ' animiert" id="' + id + '">' +
+        '<div class="gutschein-marke">' + marke + '</div>' +
+        '<div class="gutschein-titel">' + g.titel + '</div>' +
+        '<p class="gutschein-beschreibung">' + g.beschreibung + '</p>' +
+        '<div class="gutschein-info"><span>' + nummer + '</span><span>' + datum + '</span></div>' +
+        '<p class="gutschein-fuer">' + fuer + '</p>' +
+        '<div class="unterschriften">' + unterschriften + '</div>' +
+      '</div>';
+  }
+
+  // Beide Gutscheine samt Verbindungszeile in den Container einsetzen
+  function renderGutscheine(){
+    const g = CONFIG.gutscheine;
+    el('ueberraschung').innerHTML =
+      gutscheinHtml(g[0], 'gutschein-1') +
+      '<p class="verbindungszeile animiert" id="verbindungszeile">' + CONFIG.verbindung + '</p>' +
+      gutscheinHtml(g[1], 'gutschein-2');
+  }
+
+  // Blendet den gewünschten Bildschirm ein und alle anderen aus
+  function wechsleBildschirm(zielId){
+    document.querySelectorAll('.screen').forEach(function(element){
+      element.classList.remove('aktiv');
+    });
+    el(zielId).classList.add('aktiv');
+    window.scrollTo(0, 0);
+  }
+
+  // ============================================================
+  //  QUIZ-LOGIK
+  // ============================================================
+
+  // Startet das Quiz von vorn und löscht einen eventuell gespeicherten Stand
+  function starteQuiz(){
+    aktuelleFrage = 0;
+    gegebeneAntworten = [];
+    loescheFortschritt();
+    wechsleBildschirm('screen-quiz');
+    zeigeFrage();
+  }
+
+  // Setzt ein zuvor begonnenes Quiz an der gespeicherten Stelle fort
+  function setzeQuizFort(){
+    const stand = ladeFortschritt();
+    if(stand){
+      aktuelleFrage = stand.aktuelleFrage || 0;
+      gegebeneAntworten = stand.gegebeneAntworten || [];
+    }
+    wechsleBildschirm('screen-quiz');
+    zeigeFrage();
+  }
+
+  // Zeigt die aktuelle Frage inklusive Antwortmöglichkeiten an
+  function zeigeFrage(){
+    const daten = CONFIG.fragen[aktuelleFrage];
+
+    // Fortschrittsanzeige aktualisieren
+    el('fortschritt-text').textContent = vorlage(CONFIG.quiz.fortschritt, {
+      nummer: aktuelleFrage + 1,
+      gesamt: CONFIG.fragen.length
+    });
+    el('fortschritt-balken').style.width =
+      (aktuelleFrage / CONFIG.fragen.length * 100) + '%';
+
+    // Jahrzehnt über der Frage und Fragetext anzeigen
+    el('jahrzehnt-label').textContent = daten.jahrzehnt;
+    el('frage-text').textContent = daten.frage;
+
+    // Feedback-Bereich verstecken
+    el('feedback-bereich').style.display = 'none';
+
+    // Antwort-Buttons neu aufbauen
+    const liste = el('antworten-liste');
+    liste.innerHTML = '';
+    daten.antworten.forEach(function(antwort, index){
+      const btn = document.createElement('button');
+      btn.className = 'antwort-button';
+      btn.textContent = antwort;
+      btn.onclick = function(){ beantworten(index); };
+      liste.appendChild(btn);
+    });
+  }
+
+  // Wird aufgerufen, wenn eine Antwort angeklickt wurde.
+  // Zeigt sofort wohlwollendes Feedback — egal ob richtig oder falsch.
+  function beantworten(gewaehlterIndex){
+    const daten = CONFIG.fragen[aktuelleFrage];
+    const buttons = document.querySelectorAll('#antworten-liste .antwort-button');
+
+    buttons.forEach(function(btn, index){
+      btn.disabled = true;
+      if(index === daten.richtig){
+        btn.classList.add('richtig');
+      } else if(index === gewaehlterIndex){
+        btn.classList.add('falsch');
+      }
+    });
+
+    // Gewählte Antwort merken und Fortschritt sichern
+    gegebeneAntworten[aktuelleFrage] = gewaehlterIndex;
+    speichereFortschritt();
+
+    const warRichtig = gewaehlterIndex === daten.richtig;
+    el('feedback-text').innerHTML =
+      (warRichtig ? CONFIG.quiz.feedbackRichtig : CONFIG.quiz.feedbackFalsch)
+      + daten.erklaerung;
+
+    el('feedback-bereich').style.display = 'block';
+  }
+
+  // Springt zur nächsten Frage oder zum Abschluss-Bildschirm
+  function naechsteFrage(){
+    aktuelleFrage++;
+    if(aktuelleFrage < CONFIG.fragen.length){
+      speichereFortschritt();
+      zeigeFrage();
+    } else {
+      el('fortschritt-balken').style.width = '100%';
+      zeigeEnde();
+    }
+  }
+
+  // Zeigt den Abschluss-Bildschirm – zunächst nur mit dem Geburtstagsgruß.
+  // Die Gutscheine bleiben verborgen, bis der Überraschungs-Button geklickt wird.
+  function zeigeEnde(){
+    // Nach Abschluss den gespeicherten Stand zurücksetzen
+    loescheFortschritt();
+    wechsleBildschirm('screen-ende');
+    erzeugeKonfetti();
+  }
+
+  // ============================================================
+  //  GUTSCHEINE / ÜBERRASCHUNG
+  // ============================================================
+
+  // Blendet die beiden Gutscheine nacheinander sanft ein und scrollt weich
+  // dorthin. Bei reduzierter Bewegung werden sie sofort und ohne Animation
+  // angezeigt.
+  function zeigeUeberraschung(){
+    const container = el('ueberraschung');
+    const button    = el('ueberraschung-button');
+    const karte1 = el('gutschein-1');
+    const zeile  = el('verbindungszeile');
+    const karte2 = el('gutschein-2');
+    const reduziert = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    button.style.display = 'none';   // Button verschwindet nach dem Klick
+    container.style.display = 'block';
+
+    if(reduziert){
+      // Ohne Animation: alles direkt sichtbar
+      [karte1, zeile, karte2].forEach(function(element){
+        element.classList.add('sichtbar');
+      });
+      container.scrollIntoView({ behavior:'auto', block:'start' });
+      return;
+    }
+
+    // Startzustand sicher übernehmen (Reflow erzwingen), dann einblenden
+    void container.offsetWidth;
+    requestAnimationFrame(function(){
+      karte1.classList.add('sichtbar');
+      container.scrollIntoView({ behavior:'smooth', block:'start' });
+    });
+    // Zweite Karte samt Verbindungszeile mit kurzer Verzögerung
+    setTimeout(function(){
+      zeile.classList.add('sichtbar');
+      karte2.classList.add('sichtbar');
+    }, 450);
+  }
+
+  // Erzeugt ein paar dezente Konfetti-Elemente für den Abschluss-Bildschirm.
+  // Läuft nur, wenn der Nutzer keine reduzierte Bewegung eingestellt hat.
+  function erzeugeKonfetti(){
+    const reduzierteBewegung = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(reduzierteBewegung) return;
+
+    const farben = ['#f5b301', '#0e7490', '#38bdf8', '#d99a00'];
+    for(let i = 0; i < 26; i++){
+      const stueck = document.createElement('div');
+      stueck.className = 'konfetti';
+      stueck.style.left = (Math.random() * 100) + 'vw';
+      stueck.style.background = farben[i % farben.length];
+      stueck.style.animationDelay = (Math.random() * 4) + 's';
+      stueck.style.animationDuration = (3.5 + Math.random() * 2) + 's';
+      document.body.appendChild(stueck);
+    }
+  }
+
+  // ============================================================
+  //  LOCALSTORAGE (Fortschritt speichern)
+  //  localStorage kann fehlschlagen (z. B. bei file:// oder Privatmodus).
+  //  Alle Zugriffe sind deshalb in try/catch gekapselt, damit das Quiz
+  //  auch dann einwandfrei funktioniert.
+  // ============================================================
 
   // Speichert den aktuellen Fortschritt
   function speichereFortschritt(){
@@ -781,173 +1103,27 @@
     try{ localStorage.removeItem(SPEICHER_SCHLUESSEL); }catch(e){ /* egal */ }
   }
 
-  // Startet das Quiz von vorn und löscht einen eventuell gespeicherten Stand
-  function starteQuiz(){
-    aktuelleFrage = 0;
-    gegebeneAntworten = [];
-    loescheFortschritt();
-    wechsleBildschirm('screen-quiz');
-    zeigeFrage();
-  }
+  // ============================================================
+  //  INITIALISIERUNG
+  //  Läuft einmal beim Laden der Seite: Inhalte einsetzen und prüfen,
+  //  ob ein gespeicherter Fortschritt existiert.
+  // ============================================================
+  (function init(){
+    document.title = CONFIG.seitentitel;
 
-  // Setzt ein zuvor begonnenes Quiz an der gespeicherten Stelle fort
-  function setzeQuizFort(){
-    const stand = ladeFortschritt();
-    if(stand){
-      aktuelleFrage = stand.aktuelleFrage || 0;
-      gegebeneAntworten = stand.gegebeneAntworten || [];
-    }
-    wechsleBildschirm('screen-quiz');
-    zeigeFrage();
-  }
+    // Alle Texte aus CONFIG in die Bildschirme einsetzen
+    renderStart();
+    renderAbschluss();
+    renderGutscheine();
+    el('feedback-weiter').textContent = CONFIG.quiz.weiterButton;
 
-  // Zeigt die aktuelle Frage inklusive Antwortmöglichkeiten an
-  function zeigeFrage(){
-    const daten = fragen[aktuelleFrage];
-
-    // Fortschrittsanzeige aktualisieren
-    document.getElementById('fortschritt-text').textContent =
-      'Frage ' + (aktuelleFrage + 1) + ' von ' + fragen.length;
-    document.getElementById('fortschritt-balken').style.width =
-      (aktuelleFrage / fragen.length * 100) + '%';
-
-    // Jahrzehnt über der Frage anzeigen
-    document.getElementById('jahrzehnt-label').textContent = daten.jahrzehnt;
-    document.getElementById('frage-text').textContent = daten.frage;
-
-    // Feedback-Bereich verstecken
-    document.getElementById('feedback-bereich').style.display = 'none';
-
-    // Antwort-Buttons neu aufbauen
-    const liste = document.getElementById('antworten-liste');
-    liste.innerHTML = '';
-    daten.antworten.forEach((antwort, index) => {
-      const btn = document.createElement('button');
-      btn.className = 'antwort-button';
-      btn.textContent = antwort;
-      btn.onclick = () => beantworten(index);
-      liste.appendChild(btn);
-    });
-  }
-
-  // Wird aufgerufen, wenn eine Antwort angeklickt wurde.
-  // Zeigt sofort wohlwollendes Feedback — egal ob richtig oder falsch.
-  function beantworten(gewaehlterIndex){
-    const daten = fragen[aktuelleFrage];
-    const buttons = document.querySelectorAll('#antworten-liste .antwort-button');
-
-    buttons.forEach((btn, index) => {
-      btn.disabled = true;
-      if(index === daten.richtig){
-        btn.classList.add('richtig');
-      } else if(index === gewaehlterIndex){
-        btn.classList.add('falsch');
-      }
-    });
-
-    // Gewählte Antwort merken und Fortschritt sichern
-    gegebeneAntworten[aktuelleFrage] = gewaehlterIndex;
-    speichereFortschritt();
-
-    const warRichtig = gewaehlterIndex === daten.richtig;
-    document.getElementById('feedback-text').innerHTML =
-      (warRichtig
-        ? '<strong>Genau richtig!</strong> '
-        : '<strong>Fast!</strong> Kein Problem, hier ist die Auflösung: ')
-      + daten.erklaerung;
-
-    document.getElementById('feedback-bereich').style.display = 'block';
-  }
-
-  // Springt zur nächsten Frage oder zum Abschluss-Bildschirm
-  function naechsteFrage(){
-    aktuelleFrage++;
-    if(aktuelleFrage < fragen.length){
-      speichereFortschritt();
-      zeigeFrage();
-    } else {
-      document.getElementById('fortschritt-balken').style.width = '100%';
-      zeigeEnde();
-    }
-  }
-
-  // Zeigt den Abschluss-Bildschirm – zunächst nur mit dem Geburtstagsgruß.
-  // Die Gutscheine bleiben verborgen, bis der Überraschungs-Button geklickt wird.
-  function zeigeEnde(){
-    // Nach Abschluss den gespeicherten Stand zurücksetzen
-    loescheFortschritt();
-    wechsleBildschirm('screen-ende');
-    erzeugeKonfetti();
-  }
-
-  // Blendet die beiden Gutscheine nacheinander sanft ein und scrollt weich
-  // dorthin. Bei reduzierter Bewegung werden sie sofort und ohne Animation
-  // angezeigt.
-  function zeigeUeberraschung(){
-    const container = document.getElementById('ueberraschung');
-    const button = document.getElementById('ueberraschung-button');
-    const karte1 = document.getElementById('gutschein-1');
-    const zeile  = document.getElementById('verbindungszeile');
-    const karte2 = document.getElementById('gutschein-2');
-    const reduziert = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    button.style.display = 'none';   // Button verschwindet nach dem Klick
-    container.style.display = 'block';
-
-    if(reduziert){
-      // Ohne Animation: alles direkt sichtbar
-      [karte1, zeile, karte2].forEach(el => el.classList.add('sichtbar'));
-      container.scrollIntoView({ behavior:'auto', block:'start' });
-      return;
-    }
-
-    // Startzustand sicher übernehmen (Reflow erzwingen), dann einblenden
-    void container.offsetWidth;
-    requestAnimationFrame(() => {
-      karte1.classList.add('sichtbar');
-      container.scrollIntoView({ behavior:'smooth', block:'start' });
-    });
-    // Zweite Karte samt Verbindungszeile mit kurzer Verzögerung
-    setTimeout(() => {
-      zeile.classList.add('sichtbar');
-      karte2.classList.add('sichtbar');
-    }, 450);
-  }
-
-  // Blendet den gewünschten Bildschirm ein und alle anderen aus
-  function wechsleBildschirm(zielId){
-    document.querySelectorAll('.screen').forEach(el => el.classList.remove('aktiv'));
-    document.getElementById(zielId).classList.add('aktiv');
-    window.scrollTo(0, 0);
-  }
-
-  // Erzeugt ein paar dezente Konfetti-Elemente für den Abschluss-Bildschirm.
-  // Läuft nur, wenn der Nutzer keine reduzierte Bewegung eingestellt hat.
-  function erzeugeKonfetti(){
-    const reduzierteBewegung = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if(reduzierteBewegung) return;
-
-    const farben = ['#f5b301', '#0e7490', '#38bdf8', '#d99a00'];
-    for(let i = 0; i < 26; i++){
-      const stueck = document.createElement('div');
-      stueck.className = 'konfetti';
-      stueck.style.left = (Math.random() * 100) + 'vw';
-      stueck.style.background = farben[i % farben.length];
-      stueck.style.animationDelay = (Math.random() * 4) + 's';
-      stueck.style.animationDuration = (3.5 + Math.random() * 2) + 's';
-      document.body.appendChild(stueck);
-    }
-  }
-
-  // Beim Laden der Seite prüfen, ob ein Fortschritt gespeichert ist.
-  // Falls ja, den "Weitermachen"-Button auf dem Startbildschirm einblenden.
-  (function pruefeGespeichertenFortschritt(){
+    // Falls ein Fortschritt gespeichert ist, den "Weitermachen"-Button zeigen
     const stand = ladeFortschritt();
     const hatFortschritt = stand &&
       ((stand.aktuelleFrage || 0) > 0 ||
        (stand.gegebeneAntworten && stand.gegebeneAntworten.length > 0));
     if(hatFortschritt){
-      document.getElementById('weitermachen-button').style.display = 'block';
+      el('weitermachen-button').style.display = 'block';
     }
   })();
 </script>
