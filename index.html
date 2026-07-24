@@ -412,6 +412,37 @@
     color:rgba(255,255,255,0.95);
   }
 
+  /* Der Überraschungs-Bereich ist zunächst verborgen und wird per Klick
+     eingeblendet. Auf dem Bildschirm bleiben die Gutscheine bis dahin
+     unsichtbar; für den Druck werden sie weiter unten wieder erzwungen. */
+  #ueberraschung{ display:none; }
+
+  /* Verbindende Zeile zwischen den beiden Gutscheinen (dezent gesetzt) */
+  .verbindungszeile{
+    text-align:center;
+    font-style:italic;
+    color:var(--text-leicht);
+    font-size:0.98rem;
+    max-width:520px;
+    margin:0.4rem auto;
+    padding:0 0.5rem;
+  }
+
+  /* Einblend-Animation für die Gutscheine (wird per JavaScript ausgelöst) */
+  .animiert{
+    opacity:0;
+    transform:translateY(24px);
+    transition:opacity 0.7s ease, transform 0.7s ease;
+  }
+  .animiert.sichtbar{
+    opacity:1;
+    transform:translateY(0);
+  }
+  /* Bei reduzierter Bewegung keine Animation – sofort sichtbar */
+  @media (prefers-reduced-motion: reduce){
+    .animiert{ opacity:1; transform:none; transition:none; }
+  }
+
   /* Kleinere Bildschirme (Smartphone) */
   @media (max-width:480px){
     html{ font-size:16px; }
@@ -420,6 +451,45 @@
     /* Auf dem Smartphone die Unterschriften untereinander, ohne Höhen-Dehnung */
     .unterschriften{ flex-direction:column; gap:0.9rem; }
     .unterschrift{ flex:0 0 auto; }
+  }
+
+  /* ===================================================================
+     DRUCKANSICHT
+     Beim Drucken sollen die Gutscheine IMMER erscheinen – auch wenn der
+     Überraschungs-Button noch nicht angeklickt wurde. Jeder Gutschein
+     bekommt möglichst eine eigene Seite.
+     =================================================================== */
+  @media print{
+    body{ background:#fff !important; }
+    .no-print{ display:none !important; }
+    .konfetti{ display:none !important; }
+    /* Nur der Abschluss-Bildschirm mit den Gutscheinen wird gedruckt */
+    #screen-start, #screen-quiz{ display:none !important; }
+    #screen-ende{ display:block !important; }
+    #screen-ende > .karte{ display:none !important; } /* Grußkarte nicht mitdrucken */
+    /* Gutscheine erzwingen, egal ob eingeblendet oder nicht */
+    #ueberraschung{ display:block !important; }
+    .animiert{ opacity:1 !important; transform:none !important; }
+    .verbindungszeile{ page-break-inside:avoid; }
+    .gutschein{
+      opacity:1 !important;
+      transform:none !important;
+      box-shadow:none;
+      color:#000 !important;
+      background:#fff !important;
+      border:2px solid #0e7490;
+      page-break-inside:avoid;
+    }
+    /* Nur nach dem ersten Gutschein umbrechen, damit jeder auf einer
+       eigenen Seite steht und keine leere Seite am Ende entsteht */
+    #gutschein-1{ page-break-after:always; }
+    /* Farbige Textstellen im Druck lesbar machen */
+    .gutschein-marke{ color:#0e7490 !important; }
+    .gutschein-titel, .gutschein-beschreibung, .gutschein-info,
+    .gutschein-fuer, .unterschrift{ color:#000 !important; }
+    .gutschein-fuer strong{ color:#0e7490 !important; }
+    .unterschrift{ border-top:1px solid #000; }
+    .gutschein::after{ display:none; }
   }
 </style>
 </head>
@@ -518,58 +588,83 @@
         Zeit. Die kleine Zeitreise durch die Jahrzehnte sollte dir zeigen,
         wie viel sich seit 1946 verändert hat – und wie viel davon du miterlebt
         und mitgeprägt hast.<br><br>
-        Zu diesem besonderen Tag möchten wir, Jens und Julia, gemeinsam mit
-        unseren Familien, dir eine kleine Freude machen. Wir hoffen, sie
-        gefällt dir.<br><br>
+        Das Schönste aber ist und bleibt die Zeit, die wir miteinander
+        verbringen – und genau die möchten wir dir schenken. Zu diesem
+        besonderen Tag haben wir, Jens und Julia, gemeinsam mit unseren
+        Familien, uns deshalb zwei kleine Überraschungen für dich ausgedacht,
+        beide voller gemeinsamer Stunden.<br><br>
         Mit ganz viel Liebe und Umarmungen,<br>
         deine Familie
       </p>
     </div>
 
-    <!-- ============================================================
-         GUTSCHEINE
-         ============================================================ -->
-    <div class="gutschein reise">
-      <div class="gutschein-marke">Geschenkgutschein</div>
-      <div class="gutschein-titel">Gemeinsame Reise an den Bodensee</div>
-      <p class="gutschein-beschreibung">
-        Genieße mit uns ein paar unvergessliche Tage am Bodensee — mit Blick
-        aufs Wasser, gutem Essen und viel gemeinsamer Zeit.
-      </p>
-      <div class="gutschein-info">
-        <span>Gutschein-Nr. 2026-01</span>
-        <span>Ausgestellt am 24.07.2026</span>
-      </div>
-      <p class="gutschein-fuer">
-        Ausgestellt für <strong>Heinz</strong> — überreicht von seinen Kindern
-        und deren Familien.
-      </p>
-      <div class="unterschriften">
-        <div class="unterschrift">Jens Müller und Familie</div>
-        <div class="unterschrift">Julia Müller-Schleppi und Familie</div>
-      </div>
-    </div>
+    <!-- Großer Button: erst hier werden die Gutscheine enthüllt -->
+    <button id="ueberraschung-button" class="primaer-button no-print"
+            onclick="zeigeUeberraschung()">Und jetzt kommt die Überraschung</button>
 
-    <div class="gutschein essen">
-      <div class="gutschein-marke">Geschenkgutschein</div>
-      <div class="gutschein-titel">Gemeinsamer Restaurantbesuch</div>
-      <p class="gutschein-beschreibung">
-        Wir laden dich herzlich zu einem gemeinsamen Essen in einem schönen
-        Restaurant ein — ganz in Ruhe, mit gutem Essen und noch besseren
-        Gesprächen.
-      </p>
-      <div class="gutschein-info">
-        <span>Gutschein-Nr. 2026-02</span>
-        <span>Ausgestellt am 24.07.2026</span>
+    <!-- ============================================================
+         GUTSCHEINE – zunächst verborgen, per Klick eingeblendet.
+         Reihenfolge: erst Restaurant (dieses Jahr), dann Bodensee
+         (nächstes Jahr) als großer Abschluss.
+         ============================================================ -->
+    <div id="ueberraschung">
+
+      <!-- Gutschein 1: Gemeinsamer Restaurantbesuch (noch dieses Jahr) -->
+      <div class="gutschein essen animiert" id="gutschein-1">
+        <div class="gutschein-marke">Geschenkgutschein · noch dieses Jahr</div>
+        <div class="gutschein-titel">Gemeinsamer Restaurantbesuch</div>
+        <p class="gutschein-beschreibung">
+          Noch in diesem Jahr laden wir dich zu einem gemütlichen Abend in einem
+          guten Restaurant ein — ganz in Ruhe, mit gutem Essen und viel Zeit zum
+          Reden. Und weil es dein Abend sein soll, suchst du das Restaurant
+          gemeinsam mit uns aus: Sag uns einfach, worauf du Lust hast, und wir
+          machen es möglich.
+        </p>
+        <div class="gutschein-info">
+          <span>Gutschein-Nr. 2026-01</span>
+          <span>Ausgestellt am 24.07.2026</span>
+        </div>
+        <p class="gutschein-fuer">
+          Ausgestellt für <strong>Heinz</strong> — überreicht von seinen Kindern
+          und deren Familien.
+        </p>
+        <div class="unterschriften">
+          <div class="unterschrift">Jens Müller und Familie</div>
+          <div class="unterschrift">Julia Müller-Schleppi und Familie</div>
+        </div>
       </div>
-      <p class="gutschein-fuer">
-        Ausgestellt für <strong>Heinz</strong> — überreicht von seinen Kindern
-        und deren Familien.
+
+      <!-- Verbindende Zeile: die Klammer zwischen beiden Geschenken -->
+      <p class="verbindungszeile animiert" id="verbindungszeile">
+        So überbrückt unser gemeinsamer Abend in diesem Jahr die Vorfreude auf
+        die große Reise im nächsten.
       </p>
-      <div class="unterschriften">
-        <div class="unterschrift">Jens Müller und Familie</div>
-        <div class="unterschrift">Julia Müller-Schleppi und Familie</div>
+
+      <!-- Gutschein 2: Gemeinsame Reise an den Bodensee (kommendes Jahr) -->
+      <div class="gutschein reise animiert" id="gutschein-2">
+        <div class="gutschein-marke">Geschenkgutschein · im kommenden Jahr</div>
+        <div class="gutschein-titel">Gemeinsame Reise an den Bodensee</div>
+        <p class="gutschein-beschreibung">
+          Im kommenden Jahr geht es gemeinsam an den Bodensee — drei Generationen
+          unter einem Dach: du und Meta, deine beiden Kinder und ihre Familien.
+          Ein paar Tage am See, ganz ohne Termindruck: zusammen aufwachen,
+          zusammen essen, spazieren, reden und einfach die gemeinsame Zeit
+          genießen.
+        </p>
+        <div class="gutschein-info">
+          <span>Gutschein-Nr. 2026-02</span>
+          <span>Ausgestellt am 24.07.2026</span>
+        </div>
+        <p class="gutschein-fuer">
+          Ausgestellt für <strong>Heinz</strong> — überreicht von seinen Kindern
+          und deren Familien.
+        </p>
+        <div class="unterschriften">
+          <div class="unterschrift">Jens Müller und Familie</div>
+          <div class="unterschrift">Julia Müller-Schleppi und Familie</div>
+        </div>
       </div>
+
     </div>
 
   </div>
@@ -776,12 +871,47 @@
     }
   }
 
-  // Zeigt den Abschluss-Bildschirm mit Gruß und Gutscheinen
+  // Zeigt den Abschluss-Bildschirm – zunächst nur mit dem Geburtstagsgruß.
+  // Die Gutscheine bleiben verborgen, bis der Überraschungs-Button geklickt wird.
   function zeigeEnde(){
     // Nach Abschluss den gespeicherten Stand zurücksetzen
     loescheFortschritt();
     wechsleBildschirm('screen-ende');
     erzeugeKonfetti();
+  }
+
+  // Blendet die beiden Gutscheine nacheinander sanft ein und scrollt weich
+  // dorthin. Bei reduzierter Bewegung werden sie sofort und ohne Animation
+  // angezeigt.
+  function zeigeUeberraschung(){
+    const container = document.getElementById('ueberraschung');
+    const button = document.getElementById('ueberraschung-button');
+    const karte1 = document.getElementById('gutschein-1');
+    const zeile  = document.getElementById('verbindungszeile');
+    const karte2 = document.getElementById('gutschein-2');
+    const reduziert = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    button.style.display = 'none';   // Button verschwindet nach dem Klick
+    container.style.display = 'block';
+
+    if(reduziert){
+      // Ohne Animation: alles direkt sichtbar
+      [karte1, zeile, karte2].forEach(el => el.classList.add('sichtbar'));
+      container.scrollIntoView({ behavior:'auto', block:'start' });
+      return;
+    }
+
+    // Startzustand sicher übernehmen (Reflow erzwingen), dann einblenden
+    void container.offsetWidth;
+    requestAnimationFrame(() => {
+      karte1.classList.add('sichtbar');
+      container.scrollIntoView({ behavior:'smooth', block:'start' });
+    });
+    // Zweite Karte samt Verbindungszeile mit kurzer Verzögerung
+    setTimeout(() => {
+      zeile.classList.add('sichtbar');
+      karte2.classList.add('sichtbar');
+    }, 450);
   }
 
   // Blendet den gewünschten Bildschirm ein und alle anderen aus
