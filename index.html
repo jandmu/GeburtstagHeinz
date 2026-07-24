@@ -119,6 +119,108 @@
   }
   .primaer-button:hover{ box-shadow:0 10px 26px rgba(14,116,144,0.36); }
 
+  /* Zweitrangiger Button (z. B. "Weitermachen") – dezenter als der Hauptbutton */
+  .sekundaer-button{
+    background:transparent;
+    color:var(--blau-dunkel);
+    border:2px solid var(--blau);
+    margin-top:0.9rem;
+  }
+  .sekundaer-button:hover{ background:rgba(14,116,144,0.06); }
+
+  /* ---------- Startbildschirm ---------- */
+  .start-karte{
+    position:relative;
+    text-align:center;
+    overflow:hidden;
+  }
+
+  /* Dezentes "80" als Wasserzeichen im Hintergrund der Karte */
+  .start-karte .wasserzeichen{
+    position:absolute;
+    top:-2.5rem;
+    right:-1rem;
+    font-size:13rem;
+    font-weight:800;
+    line-height:1;
+    color:rgba(14,116,144,0.06);
+    pointer-events:none;
+    user-select:none;
+    z-index:0;
+  }
+  /* Alle Inhalte über das Wasserzeichen legen */
+  .start-karte > *:not(.wasserzeichen){ position:relative; z-index:1; }
+
+  /* Optionaler Foto-Platzhalter (rund, mit dezentem Rahmen) */
+  .start-foto{
+    width:130px;
+    height:130px;
+    border-radius:50%;
+    object-fit:cover;
+    margin:0 auto 1.4rem auto;
+    display:block;
+    border:4px solid var(--weiss);
+    box-shadow:0 6px 18px rgba(15,90,115,0.18), 0 0 0 2px rgba(245,179,1,0.5);
+  }
+
+  /* Große, elegante "80" als Blickfang über der Überschrift */
+  .start-achtzig{
+    font-size:4.2rem;
+    font-weight:800;
+    line-height:1;
+    letter-spacing:-0.02em;
+    background:linear-gradient(135deg, var(--gelb-dunkel), var(--blau));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    margin:0.4rem 0 0.2rem 0;
+  }
+
+  /* Schlichtes Ornament / Zierlinie über der Überschrift */
+  .zierlinie{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:0.7rem;
+    color:var(--gelb-dunkel);
+    margin:0.2rem 0 1rem 0;
+  }
+  .zierlinie::before,
+  .zierlinie::after{
+    content:"";
+    height:2px;
+    width:52px;
+    background:linear-gradient(90deg, transparent, var(--gelb));
+    border-radius:2px;
+  }
+  .zierlinie::after{
+    background:linear-gradient(90deg, var(--gelb), transparent);
+  }
+  .zierlinie span{ font-size:1.1rem; }
+
+  /* Kleinere, kursive Zeile unter der Hauptüberschrift */
+  .start-unterzeile{
+    font-size:1.15rem;
+    font-style:italic;
+    color:var(--text-leicht);
+    margin:0.3rem 0 1.4rem 0;
+  }
+
+  /* Kleine Orientierungszeile direkt vor dem Start-Button */
+  .start-hinweis{
+    font-size:0.95rem;
+    font-weight:600;
+    color:var(--blau-dunkel);
+    margin:1.6rem 0 0 0;
+  }
+
+  /* Dezente Absenderzeile unter den Buttons */
+  .start-absender{
+    font-size:0.85rem;
+    color:var(--text-leicht);
+    margin:1rem 0 0 0;
+  }
+
   /* ---------- Fortschritt ---------- */
   .fortschritt{
     display:flex;
@@ -329,16 +431,48 @@
        BILDSCHIRM 1: START
        ============================================================ -->
   <div id="screen-start" class="screen aktiv">
-    <div class="karte">
-      <h1>Herzlichen Glückwunsch zum 80. Geburtstag, lieber Papa, Opa und Schwiegervater!</h1>
+    <div class="karte start-karte">
+
+      <!-- Dezentes "80" als Wasserzeichen im Kartenhintergrund -->
+      <div class="wasserzeichen" aria-hidden="true">80</div>
+
+      <!-- HIER ANPASSEN — Foto:
+           Für ein Foto von Heinz oder ein Familienbild einfach die folgende
+           Zeile aktivieren (das "style=display:none" entfernen) und bei src
+           den Dateinamen eintragen, z. B. src="heinz.jpg". Das Bild liegt am
+           besten im selben Ordner wie diese Datei. -->
+      <img class="start-foto" src="" alt="Foto von Heinz" style="display:none;">
+
+      <!-- Große, elegante "80" als Blickfang -->
+      <div class="start-achtzig">80</div>
+
+      <!-- Schlichtes Ornament über der Überschrift -->
+      <div class="zierlinie" aria-hidden="true"><span>✦</span></div>
+
+      <!-- Groß und fett -->
+      <h1>Herzlichen Glückwunsch zum 80. Geburtstag!</h1>
+      <!-- Kleiner und kursiv -->
+      <div class="start-unterzeile">lieber Papa, Opa und Schwiegervater</div>
+
       <p>Lieber Heinz, zu deinem großen Ehrentag haben wir dir ein kleines Quiz
          zusammengestellt. Es geht um dein Geburtsjahr 1946 und die spannenden
          Jahrzehnte, die seitdem vergangen sind — Musik, Autos, Fernsehen und
          so manches Ereignis, an das du dich vielleicht noch gut erinnerst.</p>
       <p>Es gibt hier nichts zu verlieren: Jede Antwort wird freundlich
          aufgelöst, es gibt kein Zeitlimit und du kannst dir so viel Zeit lassen,
-         wie du möchtest. Am Ende wartet noch eine kleine Überraschung auf dich.</p>
+         wie du möchtest. Am Ende wartet etwas auf dich, das wir noch nicht verraten.</p>
+
+      <!-- Kleine Orientierungszeile -->
+      <p class="start-hinweis">8 Fragen, ganz ohne Eile.</p>
+
       <button class="primaer-button" onclick="starteQuiz()">Los geht's!</button>
+
+      <!-- Button zum Weitermachen – nur sichtbar, wenn ein Fortschritt gespeichert ist -->
+      <button id="weitermachen-button" class="sekundaer-button" style="display:none;"
+              onclick="setzeQuizFort()">Dort weitermachen, wo du aufgehört hast</button>
+
+      <!-- Dezente Absenderzeile -->
+      <p class="start-absender">Von Jens, Julia und ihren Familien</p>
     </div>
   </div>
 
@@ -521,9 +655,53 @@
   // ZUSTAND DES QUIZ
   // =====================================================================
   let aktuelleFrage = 0;
+  let gegebeneAntworten = [];              // merkt sich die gewählten Antworten
+  const SPEICHER_SCHLUESSEL = 'heinz-quiz-fortschritt';
 
-  // Wechselt vom Start-Bildschirm zum Quiz
+  // --- Speicher-Hilfsfunktionen (mit Fehlerbehandlung) -----------------
+  // localStorage kann fehlschlagen (z. B. bei file:// oder Privatmodus).
+  // Alle Zugriffe sind deshalb in try/catch gekapselt, damit das Quiz
+  // auch dann einwandfrei funktioniert.
+
+  // Speichert den aktuellen Fortschritt
+  function speichereFortschritt(){
+    try{
+      localStorage.setItem(SPEICHER_SCHLUESSEL, JSON.stringify({
+        aktuelleFrage: aktuelleFrage,
+        gegebeneAntworten: gegebeneAntworten
+      }));
+    }catch(e){ /* Ohne Speicher läuft das Quiz trotzdem weiter. */ }
+  }
+
+  // Liest einen gespeicherten Fortschritt aus – oder null, wenn keiner da ist
+  function ladeFortschritt(){
+    try{
+      const daten = localStorage.getItem(SPEICHER_SCHLUESSEL);
+      return daten ? JSON.parse(daten) : null;
+    }catch(e){ return null; }
+  }
+
+  // Löscht den gespeicherten Fortschritt
+  function loescheFortschritt(){
+    try{ localStorage.removeItem(SPEICHER_SCHLUESSEL); }catch(e){ /* egal */ }
+  }
+
+  // Startet das Quiz von vorn und löscht einen eventuell gespeicherten Stand
   function starteQuiz(){
+    aktuelleFrage = 0;
+    gegebeneAntworten = [];
+    loescheFortschritt();
+    wechsleBildschirm('screen-quiz');
+    zeigeFrage();
+  }
+
+  // Setzt ein zuvor begonnenes Quiz an der gespeicherten Stelle fort
+  function setzeQuizFort(){
+    const stand = ladeFortschritt();
+    if(stand){
+      aktuelleFrage = stand.aktuelleFrage || 0;
+      gegebeneAntworten = stand.gegebeneAntworten || [];
+    }
     wechsleBildschirm('screen-quiz');
     zeigeFrage();
   }
@@ -572,6 +750,10 @@
       }
     });
 
+    // Gewählte Antwort merken und Fortschritt sichern
+    gegebeneAntworten[aktuelleFrage] = gewaehlterIndex;
+    speichereFortschritt();
+
     const warRichtig = gewaehlterIndex === daten.richtig;
     document.getElementById('feedback-text').innerHTML =
       (warRichtig
@@ -586,6 +768,7 @@
   function naechsteFrage(){
     aktuelleFrage++;
     if(aktuelleFrage < fragen.length){
+      speichereFortschritt();
       zeigeFrage();
     } else {
       document.getElementById('fortschritt-balken').style.width = '100%';
@@ -595,6 +778,8 @@
 
   // Zeigt den Abschluss-Bildschirm mit Gruß und Gutscheinen
   function zeigeEnde(){
+    // Nach Abschluss den gespeicherten Stand zurücksetzen
+    loescheFortschritt();
     wechsleBildschirm('screen-ende');
     erzeugeKonfetti();
   }
@@ -623,6 +808,18 @@
       document.body.appendChild(stueck);
     }
   }
+
+  // Beim Laden der Seite prüfen, ob ein Fortschritt gespeichert ist.
+  // Falls ja, den "Weitermachen"-Button auf dem Startbildschirm einblenden.
+  (function pruefeGespeichertenFortschritt(){
+    const stand = ladeFortschritt();
+    const hatFortschritt = stand &&
+      ((stand.aktuelleFrage || 0) > 0 ||
+       (stand.gegebeneAntworten && stand.gegebeneAntworten.length > 0));
+    if(hatFortschritt){
+      document.getElementById('weitermachen-button').style.display = 'block';
+    }
+  })();
 </script>
 
 </body>
